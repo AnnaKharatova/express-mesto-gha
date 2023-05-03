@@ -10,6 +10,9 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.id).orFail(new Error('NotValidId'))
     .then((user) => {
+      if (!user) {
+        return res.status(400).json({ message: 'Пользователь не найден' });
+      }
       res.status(200).send({
         name: user.name,
         about: user.about,
@@ -39,17 +42,11 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return next(
-          res.status(400).json({
-            error: {
-              code: 400,
-              message: 'Переданы некорректные данные'
-            }
-          }));
+        return res.status(400).json({ message: 'Переданы некорректные данные' });
       }
-      return next(res.status(500).json({ message: 'На сервере произошла ошибка' }));
+      return res.status(500).json({ message: 'На сервере произошла ошибка' });
     });
-};
+  }
 
 module.exports.updateUserProfile = (req, res) => {
   const { name, about } = req.body;
@@ -62,12 +59,7 @@ module.exports.updateUserProfile = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(400).json({
-          error: {
-            code: 400,
-            message: 'Переданы некорректные данные'
-          }
-        });
+        return res.status(400).json({ message: 'Переданы некорректные данные' });
       }
       return res.status(500).json({ message: 'На сервере произошла ошибка' });
     });
