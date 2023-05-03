@@ -8,12 +8,22 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  const { id } = req.params
-  User.findById(id).orFail(res.status(400).send({ message: 'Переданы некорректные данные' }))
+  User.findById(req.params.id).orFail(new Error('NotValidId'))
     .then((user) => {
-      return res.send({ data: user });
+      res.status(200).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        _id: user._id,
+      });
     })
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+       res.status(404).send({ message: 'Запрашиваемый пользователь не найден'})
+      } else {
+      res.status(500).send({ code: 500, message: 'На сервере произошла ошибка' });
+      }
+    })
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -46,7 +56,7 @@ module.exports.updateUserProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true,  runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь не найден' });
+        return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
       }
       res.send(user);
     })

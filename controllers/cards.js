@@ -9,10 +9,9 @@ module.exports.getCards = (req, res) => {
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
-  console.log(name)
   Card.create({ name, link, owner })
     .then(card => {
       res.status(200).send({ card });
