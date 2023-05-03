@@ -9,7 +9,7 @@ module.exports.getCards = (req, res) => {
     .catch(() => res.status(500).json({ message: 'На сервере произошла ошибка' }));
 };
 
-module.exports.createCard = (req, res, next) => {
+module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })

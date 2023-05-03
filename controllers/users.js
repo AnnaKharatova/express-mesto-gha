@@ -8,7 +8,8 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.id).orFail(new Error('NotValidId'))
+  const {id} = req.params.userId;
+  User.findById(id).orFail(new Error('NotValidId'))
     .then((user) => {
       if (!user) {
         return res.status(400).json({ message: 'Пользователь не найден' });
