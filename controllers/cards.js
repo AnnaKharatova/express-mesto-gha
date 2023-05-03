@@ -40,6 +40,7 @@ module.exports.deleteCard = (req, res) => {
     res.status(500).json({ message: 'На сервере произошла ошибка' });
     }
   })
+}
 
 module.exports.addCardLike = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
