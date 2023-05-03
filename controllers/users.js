@@ -47,9 +47,9 @@ module.exports.createUser = (req, res, next) => {
             }
           }));
       }
-      return next(res.status(500).send({ message: 'На сервере произошла ошибка' }));
+      return next(res.status(500).json({ message: 'На сервере произошла ошибка' }));
     });
-}
+};
 
 module.exports.updateUserProfile = (req, res) => {
   const { name, about } = req.body;

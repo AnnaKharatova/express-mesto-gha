@@ -35,7 +35,7 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(cardId)
     .then(card => {
       if (!card) {
-        return res.status(404).json({ message: 'Карточка не найдена' });
+        return res.status(400).json({ message: 'Карточка не найдена' });
       }
       res.status(200).send({ data: card });
     })
@@ -51,7 +51,7 @@ module.exports.addCardLike = (req, res) => Card.findByIdAndUpdate(
   })
   .catch((err) => {
     if (err.message === 'NotValidId') {
-     res.status(404).json({message: 'Не найдена карточка с указанным _id'})
+     res.status(400).json({message: 'Не найдена карточка с указанным _id'})
     } else {
     res.status(500).json({ code: 500, message: 'На сервере произошла ошибка' });
     }
@@ -67,7 +67,7 @@ module.exports.removeCardLike = (req, res) => Card.findByIdAndUpdate(
   })
   .catch((err) => {
     if (err.message === 'NotValidId') {
-     res.status(404).json({message: 'Не найдена карточка с указанным _id'})
+     res.status(400).json({message: 'Не найдена карточка с указанным _id'})
     } else {
     res.status(500).json({ code: 500, message: 'На сервере произошла ошибка' });
     }

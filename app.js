@@ -19,8 +19,13 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
+app.use((req, res) => {
+  res.status(404).json({ message: "Извините, запрашиваемая страница не найдена"});
+});
 
 app.listen(PORT, () => {
   console.log(`Server start listening on port ${PORT}`);
