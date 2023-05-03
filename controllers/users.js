@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch(() => res.status(500).json({ message: 'На сервере произошла ошибка' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -19,9 +19,9 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-       res.status(404).send({ message: 'Запрашиваемый пользователь не найден'})
+       res.status(404).json({ message: 'Запрашиваемый пользователь не найден'})
       } else {
-      res.status(500).send({ code: 500, message: 'На сервере произошла ошибка' });
+      res.status(500).json({ code: 500, message: 'На сервере произошла ошибка' });
       }
     })
 };
@@ -56,7 +56,7 @@ module.exports.updateUserProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true,  runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+        return res.status(404).json({ message: 'Запрашиваемый пользователь не найден' });
       }
       res.send(user);
     })
@@ -69,7 +69,7 @@ module.exports.updateUserProfile = (req, res) => {
           }
         });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+      return res.status(500).json({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -88,6 +88,6 @@ module.exports.updateUserAvatar = (req, res) => {
           }
         });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+      return res.status(500).json({ message: 'На сервере произошла ошибка' });
     });
 };
