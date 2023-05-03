@@ -8,23 +8,19 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.id).orFail(new Error('NotValidId'))
+  User.findById(req.user._id).orFail(new Error('NotValidId'))
     .then((user) => {
       if (!user) {
         return res.status(400).json({ message: 'Пользователь не найден' });
       }
-      res.status(200).send({
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        _id: user._id,
-      });
+      res.status(200).send(user);
+
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
        res.status(404).json({ message: 'Запрашиваемый пользователь не найден'})
       } else {
-      res.status(500).json({ code: 500, message: 'На сервере произошла ошибка' });
+      res.status(500).json({ message: 'На сервере произошла ошибка' });
       }
     })
 };
