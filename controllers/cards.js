@@ -25,56 +25,54 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId).orFail(new Error('NotValidId'))
+  const { cardId } = req.params.cardId;
+  Card.findByIdAndRemove(cardId)
   .then((card) => {
-    if (!card) {
-      return res.status(400).json({ message: 'Карточка не найдена' });
-    }
-    res.send(card);
+    res.status(200).send(card)
   })
   .catch((err) => {
-    if (err.message === 'NotValidId') {
-     res.status(404).json({message: 'Не найдена карточка с указанным _id'})
-    } else {
-    res.status(500).json({ message: 'На сервере произошла ошибка' });
+    if(err.name === 'DocumentNotFoundError'){
+      return res.status(404).send({message:  'Карточка с указанным _id не найдена.'});
+      }
+    if(err.name === 'CastError'){
+    return res.status(400).send({message: 'Переданы некорректные данные при удалении карточки'});
     }
-  })
+    return res.status(500).send({ message: 'Произошла ошибка' });
+  });
 }
 
 module.exports.addCardLike = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $addToSet: { likes: req.user._id } },
-  { new: true }).orFail(new Error('NotValidId'))
+  { new: true })
   .then((card) => {
-    if (!card) {
-      return res.status(400).json({ message: 'Карточка не найдена' });
-    }
-    res.send(card);
+
+    res.status(200).send(card)
   })
   .catch((err) => {
-    if (err.message === 'NotValidId') {
-     res.status(404).json({message: 'Не найдена карточка с указанным _id'})
-    } else {
-    res.status(500).json({ message: 'На сервере произошла ошибка' });
+    if(err.name === 'DocumentNotFoundError'){
+      return res.status(404).send({message:  'Карточка с указанным _id не найдена.'});
+      }
+    if(err.name === 'CastError'){
+    return res.status(400).send({message: 'Переданы некорректные данные при удалении карточки'});
     }
+    return res.status(500).send({ message: 'Произошла ошибка' });
   })
 
 module.exports.removeCardLike = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } },
   { new: true },
-).orFail(new Error('NotValidId'))
+)
 .then((card) => {
-  if (!card) {
-    return res.status(400).json({ message: 'Карточка не найдена' });
-  }
-  res.send(card);
+  res.status(200).send(card)
 })
 .catch((err) => {
-  if (err.message === 'NotValidId') {
-   res.status(404).json({message: 'Не найдена карточка с указанным _id'})
-  } else {
-  res.status(500).json({ message: 'На сервере произошла ошибка' });
+  if(err.name === 'DocumentNotFoundError'){
+    return res.status(404).send({message:  'Карточка с указанным _id не найдена.'});
+    }
+  if(err.name === 'CastError'){
+  return res.status(400).send({message: 'Переданы некорректные данные при удалении карточки'});
   }
+  return res.status(500).send({ message: 'Произошла ошибка' });
 })
