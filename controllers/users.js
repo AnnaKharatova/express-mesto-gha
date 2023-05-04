@@ -8,7 +8,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  const {id} = req.params.userId;
+  const id = req.params.userId;
   User.findById(id).orFail()
     .then((user) => {
       res.status(200).send(user);
@@ -16,12 +16,12 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((err) => {
       if(err.name === 'DocumentNotFoundError'){
-        return res.status(404).json({message:  'Пользователь не найден'});
+        return res.status(404).send({message:  'Пользователь не найден'});
         }
       if(err.name === 'CastError'){
-      return res.status(400).json({message: 'Переданы некорректные данные'});
+      return res.status(400).send({message: 'Переданы некорректные данные'});
       }
-      return res.status(500).json({ message: 'На сервере произошла ошибка' });
+      return res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
