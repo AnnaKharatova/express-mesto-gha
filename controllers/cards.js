@@ -25,7 +25,7 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { cardId } = req.params.cardId;
+  const { cardId } = req.params;
   Card.findByIdAndRemove(cardId).orFail()
   .then((card) => {
     res.status(200).send(card)
@@ -54,7 +54,7 @@ module.exports.addCardLike = (req, res) => Card.findByIdAndUpdate(
       return res.status(404).json({message:  'Карточка с указанным _id не найдена.'});
       }
     if(err.name === 'CastError'){
-    return res.status(400).json({message: 'Переданы некорректные данные при удалении карточки'});
+    return res.status(400).json({message: 'Переданы некорректные данные'});
     }
     return res.status(500).json({ message: 'Произошла ошибка' });
   })
@@ -72,7 +72,7 @@ module.exports.removeCardLike = (req, res) => Card.findByIdAndUpdate(
     return res.status(404).json({message:  'Карточка с указанным _id не найдена.'});
     }
   if(err.name === 'CastError'){
-  return res.status(400).json({message: 'Переданы некорректные данные при удалении карточки'});
+  return res.status(400).json({message: 'Переданы некорректные данные'});
   }
   return res.status(500).json({ message: 'Произошла ошибка' });
 })
