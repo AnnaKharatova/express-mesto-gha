@@ -26,53 +26,53 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params.cardId;
-  Card.findByIdAndRemove(cardId)
+  Card.findByIdAndRemove(cardId).orFail()
   .then((card) => {
     res.status(200).send(card)
   })
   .catch((err) => {
     if(err.name === 'DocumentNotFoundError'){
-      return res.status(404).send({message:  'Карточка с указанным _id не найдена.'});
+      return res.status(404).json({message:  'Карточка с указанным _id не найдена.'});
       }
     if(err.name === 'CastError'){
-    return res.status(400).send({message: 'Переданы некорректные данные при удалении карточки'});
+    return res.status(400).json({message: 'Переданы некорректные данные при удалении карточки'});
     }
-    return res.status(500).send({ message: 'Произошла ошибка' });
+    return res.status(500).json({ message: 'Произошла ошибка' });
   });
 }
 
 module.exports.addCardLike = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $addToSet: { likes: req.user._id } },
-  { new: true })
+  { new: true }).orFail()
   .then((card) => {
 
     res.status(200).send(card)
   })
   .catch((err) => {
     if(err.name === 'DocumentNotFoundError'){
-      return res.status(404).send({message:  'Карточка с указанным _id не найдена.'});
+      return res.status(404).json({message:  'Карточка с указанным _id не найдена.'});
       }
     if(err.name === 'CastError'){
-    return res.status(400).send({message: 'Переданы некорректные данные при удалении карточки'});
+    return res.status(400).json({message: 'Переданы некорректные данные при удалении карточки'});
     }
-    return res.status(500).send({ message: 'Произошла ошибка' });
+    return res.status(500).json({ message: 'Произошла ошибка' });
   })
 
 module.exports.removeCardLike = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } },
   { new: true },
-)
+).orFail()
 .then((card) => {
   res.status(200).send(card)
 })
 .catch((err) => {
   if(err.name === 'DocumentNotFoundError'){
-    return res.status(404).send({message:  'Карточка с указанным _id не найдена.'});
+    return res.status(404).json({message:  'Карточка с указанным _id не найдена.'});
     }
   if(err.name === 'CastError'){
-  return res.status(400).send({message: 'Переданы некорректные данные при удалении карточки'});
+  return res.status(400).json({message: 'Переданы некорректные данные при удалении карточки'});
   }
-  return res.status(500).send({ message: 'Произошла ошибка' });
+  return res.status(500).json({ message: 'Произошла ошибка' });
 })
