@@ -15,13 +15,6 @@ mongoose.connect('mongodb://127.0.0.1/mestodb', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-/*app.use((req, res, next) => {
-  req.user = {
-    _id: '644a58f213b7640bccd7638a'
-  };
-  next();
-});*/
-
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -48,8 +41,8 @@ app.use((req, res) => {
   res.status(404).json({ message: "Извините, запрашиваемая страница не найдена"});
 });
 
-app.use(errors()); // обработчик ошибок celebrate
-// наш централизованный обработчик
+app.use(errors());
+
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res
@@ -60,13 +53,6 @@ app.use((err, req, res, next) => {
         : message
     });
 });
-/*app.use((err, req, res, next) => {
-  if (err && err.joi) {
-    const errors = err.joi.details.map(detail => detail.message);
-    return res.status(400).json({ errors });
-  }
-  next(err);
-});*/
 
 app.listen(PORT, () => {
   console.log(`Server start listening on port ${PORT}`);

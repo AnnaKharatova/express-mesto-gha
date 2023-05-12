@@ -50,7 +50,7 @@ module.exports.createUser = (req, res) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return res.status(400).json({ message: 'Переданы некорректные данные' });
       }
-      if (err.name === 'MongoError' && err.code === 11000) {
+      if (err.code === 11000) {
         return res.status(409).send({ message: 'Email уже используется' });
       }
       return res.status(500).json({ message: 'На сервере произошла ошибка' });
