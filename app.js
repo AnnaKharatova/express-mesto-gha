@@ -22,8 +22,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
   next();
 });*/
 
-app.post('/signup', createUser);
-app.post('/signin', login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    name: Joi.string().default('Жак-Ив Кусто').min(2).max(30),
+    about: Joi.string().default('Исследователь').min(2).max(30),
+    avatar: Joi.string().regex(/^https?:\/\/(?:w{3}\.)?(?:[a-z0-9]+[a-z0-9-]*\.)+[a-z]{2,}(?::[0-9]+)?(?:\/\S*)?#?$/i)
+      .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
+  }),
+}), createUser);
+app.post('/signin',  celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  }),
+}), login);
 
 app.use(auth);
 
@@ -46,6 +60,13 @@ app.use((err, req, res, next) => {
         : message
     });
 });
+/*app.use((err, req, res, next) => {
+  if (err && err.joi) {
+    const errors = err.joi.details.map(detail => detail.message);
+    return res.status(400).json({ errors });
+  }
+  next(err);
+});*/
 
 app.listen(PORT, () => {
   console.log(`Server start listening on port ${PORT}`);
