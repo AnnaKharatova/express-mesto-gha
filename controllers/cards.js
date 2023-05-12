@@ -26,9 +26,12 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId).orFail()
+  Card.findById(cardId).orFail()
   .then((card) => {
-    res.status(200).send(card)
+    if (!card.owner.equals(req.user._id)) {
+      return res.status(403).json({message: 'Попытка удалить чужую карточку'});
+    }
+    return card.remove().then(() => res.send({ message: 'Карточка успешно удалена' }));
   })
   .catch((err) => {
     if(err.name === 'DocumentNotFoundError'){
