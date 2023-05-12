@@ -119,7 +119,7 @@ module.exports.login = (req, res) => {
       if (!user) {
         return res.status(401).send({ message: 'Неправильные почта или пароль' });
       }
-      bcrypt.compare(password, user.password)
+      return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
             return res.status(401).send({ message: 'Неправильные почта или пароль' });
