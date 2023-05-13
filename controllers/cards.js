@@ -26,12 +26,13 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   const cardId = req.params.cardId;
-  Card.findById(cardId).orFail()
+  console.log(cardId)
+  Card.findById(cardId)
   .then((card) => {
     if (req.user._id !== card.owner.toString()) {
       return res.status(403).json({message: 'Попытка удалить чужую карточку'});
     }
-    return card.findByIdAndRemove(cardId)
+    return Card.findByIdAndRemove(cardId)
   })
   .then(() => res.send({ message: 'Карточка успешно удалена' }))
   .catch((err) => {
