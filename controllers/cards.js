@@ -25,14 +25,15 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { cardId } = req.params;
+  const cardId = req.params.cardId;
   Card.findById(cardId).orFail()
   .then((card) => {
-    if (!card.owner.equals(req.user._id)) {
+    if (req.user._id !== card.owner.toString()) {
       return res.status(403).json({message: 'Попытка удалить чужую карточку'});
     }
-    return card.findByIdAndRemove(cardId).then(() => res.send({ message: 'Карточка успешно удалена' }));
+    return card.findByIdAndRemove(cardId)
   })
+  .then(() => res.send({ message: 'Карточка успешно удалена' }))
   .catch((err) => {
     if(err.name === 'DocumentNotFoundError'){
       return res.status(404).json({message:  'Карточка с указанным _id не найдена.'});

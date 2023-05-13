@@ -3,8 +3,16 @@ const { getUsers, getUserById, updateUserProfile, updateUserAvatar, getUser } = 
 const { celebrate, Joi } = require('celebrate');
 
 router.get('/', getUsers);
-router.get('/me', getUser);
-router.get('/:userId', getUserById);
+router.get('/me', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24).hex(),
+  }),
+}), getUser);
+router.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24).hex(),
+  }),
+}), getUserById);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
