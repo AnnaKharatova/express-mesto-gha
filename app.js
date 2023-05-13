@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
 const { errors, celebrate, Joi } = require('celebrate');
-const cookieParser = require('cookie-parser');
+//const cookieParser = require('cookie-parser');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -15,7 +15,7 @@ mongoose.connect('mongodb://127.0.0.1/mestodb', {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+//app.use(cookieParser());
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -29,7 +29,7 @@ app.post('/signup', celebrate({
 }), createUser);
 app.post('/signin',  celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required(),
+    email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
 }), login);

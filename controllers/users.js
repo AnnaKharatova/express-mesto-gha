@@ -76,7 +76,7 @@ module.exports.updateUserProfile = (req, res) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params.id)
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         return res.status(404).json({ message: 'Запрашиваемый пользователь не найден' });
