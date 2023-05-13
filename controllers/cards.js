@@ -26,8 +26,7 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   const cardId = req.params.cardId;
-  console.log(cardId)
-  Card.findById(cardId)
+  Card.findById(cardId).orFail()
   .then((card) => {
     if (req.user._id !== card.owner.toString()) {
       return res.status(403).json({message: 'Попытка удалить чужую карточку'});
