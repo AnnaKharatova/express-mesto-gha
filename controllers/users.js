@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -126,13 +127,14 @@ module.exports.login = (req, res) => {
           }
           const token = jwt.sign({ _id: user._id }, 'super-strong-secret', {expiresIn: '7d'})
           res.cookie('jwt', token, {
-            maxAge: 3600000,
+            maxAge: 604800000,
             httpOnly: true,
             sameSite: true,
-          }).send();
-        });
-    })
+          })
+          res.send({ token })
+        })
     .catch(() => {
       res.status(500).send({ message: 'Ошибка на сервере' });
     });
+  })
 };
