@@ -73,18 +73,32 @@ module.exports.updateUserProfile = (req, res, next) => {
     });
 };
 
+
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.user._id)
+  const userId = req.user._id
+  User.findById(userId)
     .then((user) => {
-      /*if (!user) {
-        return res.status(404).json({ message: 'Запрашиваемый пользователь не найден' });
-      }*/
+      if (!user) {
+        return next(new NotFoundError('Пользователь по указанному _id не найден'));
+      }
       return res.send({ user });
     })
-    .catch(() => {
-      return next()
-    });
+    .catch(next);
 };
+
+
+/*module.exports.getUser = (req, res, next) => {
+  User.findById(req.user._id)
+  .then((user) => {
+    res.send(user);
+  })
+  .catch((err) => {
+    if (err instanceof mongoose.Error.ValidationError) {
+      return next(new BadRequestError('Переданы некорректные данные'));
+    }
+    return next() /*res.status(500).json({ message: 'На сервере произошла ошибка' });
+  });
+};*/
 
 module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;

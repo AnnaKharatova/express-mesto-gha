@@ -25,14 +25,14 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
-module.exports.deleteCard = (req, res, next) => {
+module.exports.deleteCard = (req, res) => {
   const cardId = req.params.cardId;
   Card.findById(cardId).orFail()
   .then((card) => {
     if (req.user._id !== card.owner.toString()) {
-      return next(new ForbiddenError('Попытка удалить чужую карточку'));
+      return next (new ForbiddenError('Попытка удалить чужую карточку'));
     }
-    return Card.deleteOne(cardId)
+    return Card.deleteOne()
   })
   .then(() => res.send({ message: 'Карточка успешно удалена' }))
   .catch((err) => {
@@ -42,8 +42,10 @@ module.exports.deleteCard = (req, res, next) => {
     /*if(err.name === 'CastError'){
     return res.status(400).json({message: 'Переданы некорректные данные при удалении карточки'});
     }*/
-    return next(err)
+    return next(err);
+
   });
+
 }
 
 module.exports.addCardLike = (req, res, next) => Card.findByIdAndUpdate(
