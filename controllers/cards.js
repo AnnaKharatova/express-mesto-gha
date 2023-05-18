@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 const mongoose = require('mongoose');
-const { ForbiddenError, BadRequestError, NotFoundError } = require('../utils/errors/index-errors')
+const { BadRequestError, ForbiddenError, NotFoundError } = require('../utils/errors/index-errors')
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -32,8 +32,8 @@ module.exports.deleteCard = (req, res, next) => {
     /*if (!card) {
       return next(new NotFoundError('Карточка с указанным _id не найдена'));
     }*/
-    if (!card.owner.equals(req.user._id)) {
-      return next(new ForbiddenError('Попытка удалить чужую карточку'));
+    if (req.user._id !== card.owner.toString()) {
+      return res.status(403).json({message: 'Попытка удалить чужую карточку'});
     }
     return Card.deleteOne()
   })
