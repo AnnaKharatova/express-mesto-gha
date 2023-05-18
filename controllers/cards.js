@@ -25,7 +25,7 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const cardId = req.params.cardId;
   Card.findById(cardId).orFail()
   .then((card) => {
