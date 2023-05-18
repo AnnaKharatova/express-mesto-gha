@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { urlRegex } = require('../utils/constants')
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -15,7 +16,13 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator(v) {
+        return urlRegex.test(v);
+      },
+      message: 'Невалидная ссылка',
+    },
+  default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
@@ -25,7 +32,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Поле должно быть заполнено'],
-    minlength: [6, 'Минимальная длина поля - 6'],
     select: false,
   }
 
