@@ -29,11 +29,8 @@ module.exports.deleteCard = (req, res, next) => {
   const cardId = req.params.cardId;
   Card.findById(cardId).orFail()
   .then((card) => {
-    /*if (!card) {
-      return next(new NotFoundError('Карточка с указанным _id не найдена'));
-    }*/
     if (req.user._id !== card.owner.toString()) {
-      return res.status(403).json({message: 'Попытка удалить чужую карточку'});
+      return next(new ForbiddenError ('Попытка удалить чужую карточку'));
     }
     return Card.deleteOne()
   })
@@ -42,13 +39,8 @@ module.exports.deleteCard = (req, res, next) => {
     if(err.name === 'DocumentNotFoundError'){
       return next(new NotFoundError('Карточка с указанным _id не найдена.'));
       }
-    if(err.name === 'CastError'){
-    return res.status(400).json({message: 'Переданы некорректные данные при удалении карточки'});
-    }
     return next(err);
-
   });
-
 }
 
 module.exports.addCardLike = (req, res, next) => Card.findByIdAndUpdate(
@@ -63,9 +55,6 @@ module.exports.addCardLike = (req, res, next) => Card.findByIdAndUpdate(
     if(err.name === 'DocumentNotFoundError'){
       return next(new NotFoundError('Карточка с указанным _id не найдена.'));
       }
-    /*if(err.name === 'CastError'){
-    return res.status(400).json({message: 'Переданы некорректные данные'});
-    }*/
     return next(err);
   })
 
@@ -81,8 +70,5 @@ module.exports.removeCardLike = (req, res, next) => Card.findByIdAndUpdate(
   if(err.name === 'DocumentNotFoundError'){
     return next(new NotFoundError('Карточка с указанным _id не найдена.'));
     }
-  /*if(err.name === 'CastError'){
-  return res.status(400).json({message: 'Переданы некорректные данные'});
-  }*/
   return next(err)
 })

@@ -6,7 +6,7 @@ const { urlRegex }  = require('../utils/constants')
 router.get('/', getUsers);
 router.get('/me', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().length(24).hex(),
+    _id: Joi.string().length(24).hex(),
   }),
 }), getUser);
 router.get('/:userId', celebrate({

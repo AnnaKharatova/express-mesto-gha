@@ -5,8 +5,6 @@ const { createUser, login } = require('./controllers/users');
 const { errors, celebrate, Joi } = require('celebrate');
 const NotFoundError = require('./utils/errors/not-found-error')
 
-
-
 const { PORT = 3000 } = process.env;
 const app = express();
 

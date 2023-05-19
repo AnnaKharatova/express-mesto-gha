@@ -15,19 +15,17 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(id).orFail()
     .then((user) => {
       res.status(200).send(user);
-
     })
     .catch((err) => {
       if(err.name === 'DocumentNotFoundError'){
         return next(new NotFoundError('Карточка с указанным _id не найдена.'));
         }
-      return next() /*res.status(500).send({ message: 'На сервере произошла ошибка' })*/;
+      return next();
     });
 };
 
 module.exports.createUser = (req, res,next) => {
   const { name, about, avatar, email, password } = req.body;
-
   bcrypt.hash(password, 10)
   .then((hash) => {
     User.create({
@@ -52,31 +50,27 @@ module.exports.createUser = (req, res,next) => {
       if (err.code === 11000) {
         return next( new ConflictError('Email уже используется' ));
       }
-      return next() /*res.status(500).json({ message: 'На сервере произошла ошибка' });*/
+      return next();
     });
   });
 }
+
 module.exports.updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true,  runValidators: true })
     .then((user) => {
-      /*if (!user) {
-        return res.status(404).json({ message: 'Запрашиваемый пользователь не найден' });
-      }*/
       res.send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return next(new BadRequestError('Переданы некорректные данные'));
       }
-      return next() /*res.status(500).json({ message: 'На сервере произошла ошибка' });*/
+      return next();
     });
 };
 
-
 module.exports.getUser = (req, res, next) => {
   const userId = req.user._id
-  console.log(userId)
   User.findById(userId)
     .then((user) => {
       if (!user) {
@@ -86,20 +80,6 @@ module.exports.getUser = (req, res, next) => {
     })
     .catch(next);
 };
-
-
-/*module.exports.getUser = (req, res, next) => {
-  User.findById(req.user._id)
-  .then((user) => {
-    res.send(user);
-  })
-  .catch((err) => {
-    if (err instanceof mongoose.Error.ValidationError) {
-      return next(new BadRequestError('Переданы некорректные данные'));
-    }
-    return next() /*res.status(500).json({ message: 'На сервере произошла ошибка' });
-  });
-};*/
 
 module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
@@ -111,7 +91,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return next(new BadRequestError('Переданы некорректные данные'));
       }
-      return next() /*res.status(500).json({ message: 'На сервере произошла ошибка' });*/
+      return next()
     });
 };
 
