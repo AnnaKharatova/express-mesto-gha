@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors, celebrate, Joi } = require('celebrate');
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
-const { errors, celebrate, Joi } = require('celebrate');
-const NotFoundError = require('./utils/errors/not-found-error')
+const NotFoundError = require('./utils/errors/not-found-error');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -24,7 +24,7 @@ app.post('/signup', celebrate({
       .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
   }),
 }), createUser);
-app.post('/signin',  celebrate({
+app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
@@ -37,19 +37,19 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use((req, res, next) => {
-  next(new NotFoundError("Извините, запрашиваемая страница не найдена"));
+  next(new NotFoundError('Извините, запрашиваемая страница не найдена'));
 });
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   const { statusCode = 500, message } = err;
   res
     .status(statusCode)
     .send({
       message: statusCode === 500
         ? 'На сервере произошла ошибка'
-        : message
+        : message,
     });
 });
 

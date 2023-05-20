@@ -6,7 +6,7 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Поле должно быть заполнено'],
     minlength: [2, 'Минимальная длина поля - 2'],
-    maxlength: [30, 'Максимальная длина поля - 30']
+    maxlength: [30, 'Максимальная длина поля - 30'],
   },
   link: {
     type: String,
@@ -19,7 +19,7 @@ const cardSchema = new mongoose.Schema({
     },
   },
   owner: {
-    type: mongoose.Schema.Types.ObjectId ,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: [true, 'Поле должно быть заполнено'],
   },
@@ -28,10 +28,10 @@ const cardSchema = new mongoose.Schema({
     ref: 'user',
     default: [],
   }],
-  createdAt : {
+  createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 }, { versionKey: false });
 
 module.exports = mongoose.model('card', cardSchema);

@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
-const { urlRegex } = require('../utils/constants')
+const { urlRegex } = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     default: 'Жак-Ив Кусто',
     minlength: [2, 'Минимальная длина поля - 2'],
-    maxlength: [30, 'Максимальная длина поля - 30']
+    maxlength: [30, 'Максимальная длина поля - 30'],
   },
   about: {
     type: String,
     default: 'Исследователь',
     minlength: [2, 'Минимальная длина поля - 2'],
-    maxlength: [30, 'Максимальная длина поля - 30']
+    maxlength: [30, 'Максимальная длина поля - 30'],
   },
   avatar: {
     type: String,
@@ -22,18 +22,18 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Невалидная ссылка',
     },
-  default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
     required: [true, 'Поле должно быть заполнено'],
     select: false,
-  }
+  },
 
 }, { versionKey: false });
 
