@@ -112,7 +112,12 @@ module.exports.login = (req, res, next) => {
             return next(new UnauthorizedError('Неправильные почта или пароль'));
           }
           const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
-          return res.send({ token });
+          res.cookie('jwt', token, {
+            maxAge: 604800000,
+            httpOnly: true,
+            sameSite: true,
+          });
+          return res.send({ message: 'Вход выполнен успешно' });
         })
         .catch(next);
     });

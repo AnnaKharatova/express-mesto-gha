@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { UnauthorizedError, InternalServerError } = require('../utils/errors/index-errors');
+
+const UnauthorizedError = require('../utils/errors/unauthorized-error');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
@@ -7,7 +8,9 @@ module.exports = (req, res, next) => {
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return next(new UnauthorizedError('Необходима авторизация'));
   }
+
   const token = authorization.replace('Bearer ', '');
+
   let payload;
 
   try {
@@ -15,6 +18,8 @@ module.exports = (req, res, next) => {
   } catch (err) {
     return next(new UnauthorizedError('Необходима авторизация'));
   }
+
   req.user = payload;
-  return next(new InternalServerError('Произошла ошибка на сервере'));
+
+  return next();
 };
